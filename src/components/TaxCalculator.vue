@@ -13,7 +13,6 @@
                                               :max="100"
                                               :precision="2"
                                               :step="0.1"
-                                              label="Bonzai"
                                               v-model="form.currentMarginalTaxRate"
                                     >
                                         <template slot="append">%</template>
