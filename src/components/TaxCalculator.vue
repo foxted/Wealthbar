@@ -2,6 +2,7 @@
     <el-container>
         <el-col>
             <el-row :gutter="20">
+                <h1>TFSA vs. RRSP</h1>
                 <el-col :span="18" :offset="3" align="left">
                     <el-form label-position="top">
                         <el-row :gutter="20">
@@ -91,7 +92,7 @@
 </template>
 
 <script>
-import accounting from 'accounting';
+import { formatMoney, formatPercentage } from '@/utilities/formatting';
 
 export default {
     data() {
@@ -102,7 +103,7 @@ export default {
                 depositAmount: 1000,
                 yearsInvested: 30,
                 returnOnInvestment: 6,
-                inflationRate: 0
+                inflationRate: 2.5
             }
         };
     },
@@ -111,33 +112,33 @@ export default {
             return [
                 {
                     header: 'Pre-Tax Dollars',
-                    tfsa: this.format(this.form.depositAmount),
-                    rrsp: this.format(this.form.depositAmount),
+                    tfsa: this.formatMoney(this.form.depositAmount),
+                    rrsp: this.formatMoney(this.form.depositAmount),
                 },
                 {
-                    header: `Tax (${this.formatPercent(this.form.currentMarginalTaxRate)})`,
-                    tfsa: this.format(this.taxAmountTFSA),
-                    rrsp: this.format(this.taxAmountRRSP),
+                    header: `Tax (${this.formatPercentage(this.form.currentMarginalTaxRate)})`,
+                    tfsa: this.formatMoney(this.taxAmountTFSA),
+                    rrsp: this.formatMoney(this.taxAmountRRSP),
                 },
                 {
                     header: 'After-Tax Dollars',
-                    tfsa: this.format(this.amountAfterTaxTFSA),
-                    rrsp: this.format(this.amountAfterTaxRRSP),
+                    tfsa: this.formatMoney(this.amountAfterTaxTFSA),
+                    rrsp: this.formatMoney(this.amountAfterTaxRRSP),
                 },
                 {
                     header: 'Future Value',
-                    tfsa: this.format(this.futureBeforeTaxValueTFSA),
-                    rrsp: this.format(this.futureBeforeTaxValueRRSP),
+                    tfsa: this.formatMoney(this.futureBeforeTaxValueTFSA),
+                    rrsp: this.formatMoney(this.futureBeforeTaxValueRRSP),
                 },
                 {
-                    header: `Future Tax Paid (${this.formatPercent(this.form.retirementAverageTaxRate)})`,
-                    tfsa: this.format(this.futureTaxValueTFSA),
-                    rrsp: this.format(this.futureTaxValueRRSP),
+                    header: `Future Tax Paid (${this.formatPercentage(this.form.retirementAverageTaxRate)})`,
+                    tfsa: this.formatMoney(this.futureTaxValueTFSA),
+                    rrsp: this.formatMoney(this.futureTaxValueRRSP),
                 },
                 {
                     header: 'After Tax Future Value',
-                    tfsa: this.format(this.futureAfterTaxValueTFSA),
-                    rrsp: this.format(this.futureAfterTaxValueRRSP),
+                    tfsa: this.formatMoney(this.futureAfterTaxValueTFSA),
+                    rrsp: this.formatMoney(this.futureAfterTaxValueRRSP),
                 }
             ];
         },
@@ -148,7 +149,7 @@ export default {
             return this.form.inflationRate / 100;
         },
         realRateOfReturn() {
-            if(this.inflationRate === 0) {
+            if (this.inflationRate === 0) {
                 return this.returnOnInvestment;
             }
 
@@ -186,17 +187,11 @@ export default {
         },
     },
     methods: {
+        formatMoney,
+        formatPercentage,
         futureValue(capital) {
             return capital * Math.pow(1 + this.realRateOfReturn, this.form.yearsInvested);
         },
-        format(amount) {
-            return accounting.formatMoney(amount, {
-                precision: 2,
-            })
-        },
-        formatPercent(amount) {
-            return accounting.formatNumber(amount, 2) + '%';
-        }
     }
 };
 </script>
